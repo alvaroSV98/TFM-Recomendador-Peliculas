@@ -66,15 +66,25 @@ def recomendar_hibrido(
             + P[u] @ Q[i]
         )
 
-        # Score de popularidad
+        # Limitar la predicción a la escala original de MovieLens
+        score_mf = min(max(score_mf, 0.5), 5.0)
+
+        # Normalizar el score de factores latentes a [0, 1]
+        score_mf_norm = (
+            (score_mf - 0.5)
+            /
+            (5.0 - 0.5)
+        )
+
+        # Score de popularidad ya normalizado a [0, 1]
         score_pop = popularidad_normalizada.get(
             pelicula_id,
             0.0
         )
 
-        # Combinación híbrida
+        # Combinación híbrida sobre una escala común
         score_hibrido = (
-            alpha * score_mf
+            alpha * score_mf_norm
             +
             (1 - alpha) * score_pop
         )
